@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
 from persistencia import estado
-from config import COR_PAINEL, COR_TEXTO
+from config import COR_FUNDO, COR_PAINEL, COR_TEXTO
 from api.servicos_api import pegar_ativos
 
 
@@ -73,9 +73,24 @@ def clicou_no_numero(event):
             vul["nome"],
             vul["severidade"],
             vul.get("responsavel", ""),
-            vul.get("tratamento", ""),
+            vul.get("tratamento", "").replace("\n", " "),
             str(vul.get("progresso", 0)) + "/10"
         ))
         numero = numero + 1
 
     tabela_vul.pack(fill="both", expand=True, padx=10, pady=10)
+    def mostrar_tratamento_completo(event):
+        sel_v = tabela_vul.selection()
+        if not sel_v:
+            return
+        idx = tabela_vul.index(sel_v[0])
+        janela_texto = tk.Toplevel(janela_lista)
+        janela_texto.title("Tratamento completo")
+        janela_texto.geometry("520x320")
+        janela_texto.configure(bg=COR_PAINEL)
+        caixa = tk.Text(janela_texto, wrap="word", bg=COR_FUNDO, fg=COR_TEXTO)
+        caixa.insert("1.0", ativo["vulnerabilidades"][idx].get("tratamento", ""))
+        caixa.config(state="disabled")
+        caixa.pack(fill="both", expand=True, padx=10, pady=10)
+
+    tabela_vul.bind("<Double-1>", mostrar_tratamento_completo)
