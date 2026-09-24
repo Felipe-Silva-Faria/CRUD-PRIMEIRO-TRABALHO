@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-import persistencia.estado as estado
 from config import ARQUIVO_TXT, COR_FUNDO, COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
 from api.servicos_api import mandar_ativo
 from ativos.tabela_ativos import atualizar_tabela
+from persistencia import estado
 
 
 # janela das vulnerabilidades (Cadastro)

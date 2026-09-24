@@ -1,9 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-
-import persistencia.estado as estado
+from persistencia import estado
 from config import COR_PAINEL, COR_TEXTO
-from servicos_api import pegar_ativos
+from api.servicos_api import pegar_ativos
 
 
 # atualiza tabela

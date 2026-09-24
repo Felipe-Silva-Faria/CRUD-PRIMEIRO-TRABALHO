@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-import persistencia.estado as estado
+from persistencia import estado
 from config import COR_FUNDO, COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
 from api.servicos_api import atualizar_ativo_api_ou_txt
 from ativos.tabela_ativos import atualizar_tabela

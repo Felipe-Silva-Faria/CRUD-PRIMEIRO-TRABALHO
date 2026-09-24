@@ -1,5 +1,5 @@
 from tkinter import messagebox
-import persistencia.estado as estado
+from persistencia import estado
 from api.servicos_api import deletar_ativo_api_ou_txt
 from ativos.tabela_ativos import atualizar_tabela
 

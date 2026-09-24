@@ -1,6 +1,5 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from typing import Optional
 import random
 
 app = FastAPI()
@@ -18,7 +17,7 @@ class AtivoCreate(BaseModel):
     nome: str
     tipo: str
     local: str
-    vulnerabilidades: list = []
+    vulnerabilidades: list[Vulnerabilidade] = []
 
 
 class Ativo(AtivoCreate):

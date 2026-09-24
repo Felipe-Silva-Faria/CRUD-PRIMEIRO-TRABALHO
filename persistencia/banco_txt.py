@@ -1,7 +1,7 @@
 import json
 import os
 from tkinter import messagebox
-import estado
+import persistencia.estado as estado
 from config import ARQUIVO_TXT
 
 

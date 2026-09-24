@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
-import persistencia.estado as estado
+from persistencia import estado
 from config import COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
-from janela_vulnerabilidade import abrir_janela_vulnerabilidade
+from interface.janela_vulnerabilidade import abrir_janela_vulnerabilidade
 
 
 # add

@@ -1,18 +1,16 @@
 import random
 from tkinter import messagebox
-
 import requests
-
 from persistencia.banco_txt import avisar_offline, escrever_txt, ler_txt, sobrescrever_txt_inteiro
 from config import URL_API
-
+from persistencia import estado
 
 # solicita ativos
 def pegar_ativos():
     try:
         resposta = requests.get(URL_API, timeout=3)
-        if resposta.status_code == 200:
-            return resposta.json()
+        if resposta.status_code == 405:
+            avisar_offline()
         avisar_offline()
         return ler_txt()
     except Exception as e:
@@ -26,8 +24,8 @@ def mandar_ativo(dados):
     try:
         resposta = requests.post(URL_API, json=dados, timeout=3)
         if resposta.status_code == 200:
-            return True
-        avisar_offline()
+            estado.modo_offline = False
+            return resposta.json()
     except Exception as e:
         print("Erro na api:", e)
         avisar_offline()

@@ -3,13 +3,13 @@
 # autoexplicativo
 modo_offline = False
 
-# janela principal e o container (preenchidos em janela_principal.py)
+# janela principal e o container
 root = None
 coisa_frame = None
 
 # guarda os ativos que vieram da api
 ativos_salvos = {}
 
-# widgets da pagina principal (preenchidos em janela_principal.py)
+# widgets da pagina principal
 tabela = None
 titulo_box = None
