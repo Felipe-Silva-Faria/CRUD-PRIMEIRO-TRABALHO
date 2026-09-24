@@ -10,7 +10,7 @@ from persistencia import estado
 def abrir_janela_vulnerabilidade(nome, tipo, local):
     janela_vul = tk.Toplevel(estado.root)
     janela_vul.title("Vulnerabilidade(s)")
-    janela_vul.geometry("760x600")
+    janela_vul.geometry("900x700")
     janela_vul.configure(bg=COR_PAINEL)
 
     vulnerabilidades = []
@@ -36,6 +36,21 @@ def abrir_janela_vulnerabilidade(nome, tipo, local):
     tabela_vul.column("tratamento", width=180, anchor="w")
     tabela_vul.column("progresso", width=80, anchor="center")
     tabela_vul.pack(fill="both", expand=True, padx=10)
+    def mostrar_tratamento_completo(event):
+        sel_v = tabela_vul.selection()
+        if not sel_v:
+            return
+        idx = tabela_vul.index(sel_v[0])
+        janela_texto = tk.Toplevel(janela_vul)
+        janela_texto.title("Tratamento completo")
+        janela_texto.geometry("520x320")
+        janela_texto.configure(bg=COR_PAINEL)
+        caixa = tk.Text(janela_texto, wrap="word", bg=COR_FUNDO, fg=COR_TEXTO)
+        caixa.insert("1.0", vulnerabilidades[idx]["tratamento"])
+        caixa.config(state="disabled")
+        caixa.pack(fill="both", expand=True, padx=10, pady=10)
+
+    tabela_vul.bind("<Double-1>", mostrar_tratamento_completo)
 
     tk.Label(janela_vul, text="Vulnerabilidade:", **lbl_opts).pack(pady=(10, 0))
     entry_Vul = tk.Entry(janela_vul, width=50)
@@ -71,8 +86,14 @@ def abrir_janela_vulnerabilidade(nome, tipo, local):
 
     # tratamento + progresso do tratamento (vao juntos)
     tk.Label(janela_vul, text="Tratamento:", **lbl_opts).pack(pady=(10, 0))
-    entry_Tratamento = tk.Entry(janela_vul, width=50)
-    entry_Tratamento.pack()
+    frame_tratamento = tk.Frame(janela_vul, bg=COR_PAINEL)
+    frame_tratamento.pack()
+    entry_Tratamento = tk.Text(frame_tratamento, width=50, height=5, wrap="word")
+    entry_Tratamento.pack(side="left")
+    scroll_tratamento = ttk.Scrollbar(frame_tratamento, orient="vertical",
+                                      command=entry_Tratamento.yview)
+    entry_Tratamento.configure(yscrollcommand=scroll_tratamento.set)
+    scroll_tratamento.pack(side="right", fill="y")
 
     tk.Label(janela_vul, text="Progresso do tratamento (0 a 10):", **lbl_opts).pack(pady=(10, 0))
 
@@ -105,31 +126,37 @@ def abrir_janela_vulnerabilidade(nome, tipo, local):
                 "Escreva a vulnerabilidade!"
             )
             return
-        if entry_Responsavel.get() == "" or entry_Tratamento.get() == "":
+
+        texto_tratamento = entry_Tratamento.get("1.0", "end").strip()
+
+        if entry_Responsavel.get() == "" or texto_tratamento == "":
             messagebox.showerror(
                 "Erro",
                 "Preencha o responsavel e o tratamento!"
             )
             return
+
         vulnerabilidades.append({
             "nome": entry_Vul.get(),
             "severidade": severidade.get(),
             "responsavel": entry_Responsavel.get(),
-            "tratamento": entry_Tratamento.get(),
+            "tratamento": texto_tratamento,
             "progresso": progresso.get()
         })
+
         tabela_vul.insert("", "end", values=(
             len(vulnerabilidades),
             entry_Vul.get(),
             severidade.get(),
             entry_Responsavel.get(),
-            entry_Tratamento.get(),
+            texto_tratamento.replace("\n", " "),
             str(progresso.get()) + "/10"
         ))
+
         entry_Vul.delete(0, "end")
         severidade.set("baixa")
         entry_Responsavel.delete(0, "end")
-        entry_Tratamento.delete(0, "end")
+        entry_Tratamento.delete("1.0", "end")
         progresso.set(0)
 
     def salvar():

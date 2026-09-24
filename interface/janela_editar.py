@@ -66,7 +66,7 @@ def abrir_janela_editar():
                 vul["nome"],
                 vul["severidade"],
                 vul.get("responsavel", ""),
-                vul.get("tratamento", ""),
+                vul.get("tratamento", "").replace("\n", " "),
                 str(vul.get("progresso", 0)) + "/10"
             ))
 
