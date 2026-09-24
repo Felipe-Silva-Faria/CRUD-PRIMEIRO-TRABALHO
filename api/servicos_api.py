@@ -5,12 +5,13 @@ from persistencia.banco_txt import avisar_offline, escrever_txt, ler_txt, sobres
 from config import URL_API
 from persistencia import estado
 
-# solicita ativos
+## solicita ativos
 def pegar_ativos():
     try:
         resposta = requests.get(URL_API, timeout=3)
-        if resposta.status_code == 405:
-            avisar_offline()
+        if resposta.status_code == 200:
+            estado.modo_offline = False
+            return resposta.json()
         avisar_offline()
         return ler_txt()
     except Exception as e:
@@ -18,14 +19,13 @@ def pegar_ativos():
         avisar_offline()
         return ler_txt()
 
-
 # envia ativos
 def mandar_ativo(dados):
     try:
         resposta = requests.post(URL_API, json=dados, timeout=3)
         if resposta.status_code == 200:
             estado.modo_offline = False
-            return resposta.json()
+            return True
     except Exception as e:
         print("Erro na api:", e)
         avisar_offline()
