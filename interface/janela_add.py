@@ -41,7 +41,7 @@ def abrir_janela_add():
             messagebox.showerror("Erro", "O nome deve possuir pelo menos 3 caracteres!")
             return
 
-        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", nome):
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", nome) or not re.search(r"[A-Za-zÀ-ÿ]", nome):
             messagebox.showerror("Erro", "O nome contém caracteres inválidos!")
             return
 
@@ -54,8 +54,8 @@ def abrir_janela_add():
             messagebox.showerror("Erro", "O tipo deve possuir pelo menos 3 caracteres!")
             return
 
-        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", tipo):
-            messagebox.showerror("Erro", "O tipo contém caracteres inválidos!")
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", nome) or not re.search(r"[A-Za-zÀ-ÿ]", nome):
+            messagebox.showerror("Erro", "O nome contém caracteres inválidos!")
             return
 
         # Local
@@ -67,8 +67,8 @@ def abrir_janela_add():
             messagebox.showerror("Erro", "O local deve possuir pelo menos 3 caracteres!")
             return
 
-        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-/]+", local):
-            messagebox.showerror("Erro", "O local contém caracteres inválidos!")
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", nome) or not re.search(r"[A-Za-zÀ-ÿ]", nome):
+            messagebox.showerror("Erro", "O nome contém caracteres inválidos!")
             return
 
         janela_add.destroy()
