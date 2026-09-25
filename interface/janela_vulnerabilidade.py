@@ -136,6 +136,20 @@ def abrir_janela_vulnerabilidade(nome, tipo, local):
             )
             return
 
+        if severidade.get() not in ["baixa", "media", "alta"]:
+            messagebox.showerror(
+                "Erro",
+                "Severidade invalida!"
+            )
+            return
+
+        if not 0 <= progresso.get() <= 10:
+            messagebox.showerror(
+                "Erro",
+                "O progresso deve estar entre 0 e 10!"
+            )
+            return
+
         vulnerabilidades.append({
             "nome": entry_Vul.get(),
             "severidade": severidade.get(),

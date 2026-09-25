@@ -3,6 +3,7 @@ from tkinter import messagebox
 from persistencia import estado
 from config import COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
 from interface.janela_vulnerabilidade import abrir_janela_vulnerabilidade
+import re
 
 
 # add
@@ -27,15 +28,49 @@ def abrir_janela_add():
     entry_Local.pack()
 
     def salvar():
-        if entry_Nome.get() == "" or entry_Tipo.get() == "" or entry_Local.get() == "":
-            messagebox.showerror(
-                "Erro",
-                "Preencha o nome, o tipo e o local!"
-            )
+        nome = entry_Nome.get().strip()
+        tipo = entry_Tipo.get().strip()
+        local = entry_Local.get().strip()
+
+        # Nome
+        if not nome:
+            messagebox.showerror("Erro", "O nome é obrigatório!")
             return
-        nome = entry_Nome.get()
-        tipo = entry_Tipo.get()
-        local = entry_Local.get()
+
+        if len(nome) < 3:
+            messagebox.showerror("Erro", "O nome deve possuir pelo menos 3 caracteres!")
+            return
+
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", nome):
+            messagebox.showerror("Erro", "O nome contém caracteres inválidos!")
+            return
+
+        # Tipo
+        if not tipo:
+            messagebox.showerror("Erro", "O tipo é obrigatório!")
+            return
+
+        if len(tipo) < 3:
+            messagebox.showerror("Erro", "O tipo deve possuir pelo menos 3 caracteres!")
+            return
+
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-_]+", tipo):
+            messagebox.showerror("Erro", "O tipo contém caracteres inválidos!")
+            return
+
+        # Local
+        if not local:
+            messagebox.showerror("Erro", "O local é obrigatório!")
+            return
+
+        if len(local) < 3:
+            messagebox.showerror("Erro", "O local deve possuir pelo menos 3 caracteres!")
+            return
+
+        if not re.fullmatch(r"[A-Za-zÀ-ÿ0-9\s\-/]+", local):
+            messagebox.showerror("Erro", "O local contém caracteres inválidos!")
+            return
+
         janela_add.destroy()
         abrir_janela_vulnerabilidade(nome, tipo, local)
 

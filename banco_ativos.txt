@@ -1,0 +1,1 @@
+{"id": 31050, "nome": "Apice", "tipo": "massa", "local": "legal", "vulnerabilidades": [{"nome": "fdafafdafa", "severidade": "baixa", "responsavel": "dsfafdfad", "tratamento": "Pfajfkdajfaffflkfdafdajkljlk", "progresso": 0}]}
