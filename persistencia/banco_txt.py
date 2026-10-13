@@ -1,11 +1,11 @@
 import json
 import os
 from tkinter import messagebox
+
 import persistencia.estado as estado
 from config import ARQUIVO_TXT
 
 
-# failsafe: se fastAPI nao funcionar --> usa arquivo txt
 def ler_txt():
     ativos = []
     if not os.path.exists(ARQUIVO_TXT):
