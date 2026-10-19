@@ -3,3 +3,4 @@ uvicorn>=0.30
 requests>=2.32
 pydantic>=2.7
 openpyxl>=3.1
+numpy>=1.26

@@ -16,9 +16,9 @@ def dados_servidor():
         "tipo": "Servidor",
         "local": "Data Center",
         "vulnerabilidades": [
-            {"nome": "CVE-2021-44228 Log4Shell", "severidade": "Crítica",
+            {"nome": "CVE-2021-44228 Log4Shell", "vetor_cvss": "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:H/I:H/A:H",
              "responsavel": "Ana Souza", "tratamento": "Atualizar log4j", "progresso": 0},
-            {"nome": "TLS 1.0 habilitado", "severidade": "Media",
+            {"nome": "TLS 1.0 habilitado", "cvss": 5.3,
              "responsavel": "", "tratamento": "", "progresso": 5},
         ],
     }

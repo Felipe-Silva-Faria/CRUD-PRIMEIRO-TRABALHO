@@ -20,6 +20,7 @@ CHAVES_ORDENACAO = {
     "tipo": lambda a: a.tipo.rotulo,
     "local": lambda a: normalizar_chave(a.local),
     "vulnerabilidades": lambda a: len(a.vulnerabilidades),
+    "cvss": lambda a: a.maior_cvss() or 0.0,
     "risco": lambda a: a.risco_total(),
 }
 

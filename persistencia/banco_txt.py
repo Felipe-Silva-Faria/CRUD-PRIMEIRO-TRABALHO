@@ -2,8 +2,8 @@ import json
 import os
 from tkinter import messagebox
 
-import persistencia.estado as estado
 from config import ARQUIVO_TXT
+from persistencia import estado
 
 
 def ler_txt():
@@ -17,7 +17,7 @@ def ler_txt():
                 if linha == "":
                     continue
                 ativos.append(json.loads(linha))
-    except Exception as e:
+    except (OSError, json.JSONDecodeError) as e:
         print("Erro lendo o txt:", e)
     return ativos
 
@@ -30,10 +30,9 @@ def escrever_txt(ativo):
 def sobrescrever_txt_inteiro(ativos):
     try:
         with open(ARQUIVO_TXT, "w", encoding="utf-8") as arquivo:
-            for ativo in ativos:
-                arquivo.write(json.dumps(ativo, ensure_ascii=False) + "\n")
+            arquivo.writelines(json.dumps(ativo, ensure_ascii=False) + "\n" for ativo in ativos)
         return True
-    except Exception as e:
+    except OSError as e:
         print("Erro salvando txt:", e)
         return False
 

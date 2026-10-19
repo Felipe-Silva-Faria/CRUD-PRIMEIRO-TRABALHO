@@ -12,7 +12,7 @@ def configurar_logs(pasta="logs", nivel=logging.INFO):
         return
     Path(pasta).mkdir(exist_ok=True)
     arquivo = RotatingFileHandler(Path(pasta) / "crud.log", maxBytes=1_000_000,
-                                  backupCount=3, encoding="utf-8")
+     backupCount=3, encoding="utf-8")
     arquivo.setFormatter(logging.Formatter(FORMATO))
     console = logging.StreamHandler()
     console.setFormatter(logging.Formatter(FORMATO))

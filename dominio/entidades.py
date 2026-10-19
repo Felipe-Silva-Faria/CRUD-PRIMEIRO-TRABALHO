@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
 
+from algoritmos.cvss import calcular_cvss, interpretar_entrada, nota_de_rotulo_legado
 from dominio.enums import Severidade, StatusTratamento, TipoAtivo
 from dominio.excecoes import ErroValidacao
-from dominio.validacao import (validar_id, validar_progresso, validar_texto,
-                               validar_texto_livre)
+from dominio.validacao import validar_id, validar_progresso, validar_texto, validar_texto_livre
 
 
 class Entidade(ABC):
@@ -35,11 +35,12 @@ class Entidade(ABC):
 
 
 class Vulnerabilidade(Entidade):
-    def __init__(self, nome, severidade, responsavel="", tratamento="",
+    def __init__(self, nome, cvss, responsavel="", tratamento="",
                  progresso=0, risco_aceito=False):
         super().__init__(None)
         self.nome = nome
-        self.severidade = severidade
+        self._vetor_cvss = ""
+        self.cvss = cvss
         self.responsavel = responsavel
         self.tratamento = tratamento
         self.progresso = progresso
@@ -54,15 +55,28 @@ class Vulnerabilidade(Entidade):
         self._nome = validar_texto("nome da vulnerabilidade", valor, permitir_digitos=True, maximo=120)
 
     @property
-    def severidade(self):
-        return self._severidade
+    def cvss(self):
+        return self._cvss
 
-    @severidade.setter
-    def severidade(self, valor):
-        try:
-            self._severidade = Severidade.de_valor(valor)
-        except ValueError as erro:
-            raise ErroValidacao("severidade", str(erro)) from None
+    @cvss.setter
+    def cvss(self, valor):
+        nota, vetor = interpretar_entrada(valor)
+        self._cvss = nota
+        self._vetor_cvss = vetor
+
+    @property
+    def vetor_cvss(self):
+        return self._vetor_cvss
+
+    @vetor_cvss.setter
+    def vetor_cvss(self, vetor):
+        resultado = calcular_cvss(vetor)
+        self._cvss = resultado.nota
+        self._vetor_cvss = resultado.vetor
+
+    @property
+    def severidade(self):
+        return Severidade.de_cvss(self._cvss)
 
     @property
     def responsavel(self):
@@ -101,11 +115,13 @@ class Vulnerabilidade(Entidade):
     def risco_residual(self):
         if not self.aberta:
             return 0.0
-        return self.severidade.value * (10 - self.progresso) / 10
+        return round(self.cvss * (10 - self.progresso) / 10, 2)
 
     def to_dict(self):
         return {
             "nome": self.nome,
+            "cvss": self.cvss,
+            "vetor_cvss": self.vetor_cvss,
             "severidade": self.severidade.rotulo,
             "responsavel": self.responsavel,
             "tratamento": self.tratamento,
@@ -117,9 +133,17 @@ class Vulnerabilidade(Entidade):
     def from_dict(cls, dados):
         status = dados.get("status")
         risco_aceito = status is not None and StatusTratamento.de_valor(status) is StatusTratamento.RISCO_ACEITO
+        if dados.get("vetor_cvss"):
+            entrada = dados["vetor_cvss"]
+        elif dados.get("cvss") is not None:
+            entrada = dados["cvss"]
+        elif dados.get("severidade"):
+            entrada = nota_de_rotulo_legado(dados["severidade"])
+        else:
+            raise ErroValidacao("cvss", "informe a nota CVSS ou o vetor CVSS")
         return cls(
             nome=dados.get("nome", ""),
-            severidade=dados.get("severidade", ""),
+            cvss=entrada,
             responsavel=dados.get("responsavel", ""),
             tratamento=dados.get("tratamento", ""),
             progresso=dados.get("progresso", 0),
@@ -127,7 +151,8 @@ class Vulnerabilidade(Entidade):
         )
 
     def resumo(self):
-        return f"{self.nome} [{self.severidade.rotulo}] - {self.status.value} ({self.progresso}/10)"
+        return (f"{self.nome} [CVSS {self.cvss:.1f} - {self.severidade.rotulo}] - "
+                f"{self.status.value} ({self.progresso}/10)")
 
 
 class Ativo(Entidade):
@@ -187,13 +212,20 @@ class Ativo(Entidade):
     def recomendacao(self):
         ...
 
+    def risco_proprio(self):
+        return round(sum(v.cvss for v in self._vulnerabilidades), 2)
+
     def risco_total(self):
         base = sum(v.risco_residual() for v in self._vulnerabilidades)
         return round(base * self.fator_exposicao(), 2)
 
-    def pior_severidade(self):
-        abertas = [v.severidade for v in self._vulnerabilidades if v.aberta]
+    def maior_cvss(self):
+        abertas = [v.cvss for v in self._vulnerabilidades if v.aberta]
         return max(abertas) if abertas else None
+
+    def pior_severidade(self):
+        nota = self.maior_cvss()
+        return None if nota is None else Severidade.de_cvss(nota)
 
     def to_dict(self):
         return {

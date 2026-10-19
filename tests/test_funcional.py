@@ -3,11 +3,22 @@ from unittest.mock import Mock
 import pytest
 
 from dominio.entidades import criar_ativo
-from utilitarios.funcional import (achatar, agrupar_por, algum, compor,
-                                   contar_vulnerabilidades, cronometrar,
-                                   negar, por_severidade_minima, por_texto,
-                                   por_tipo, risco_recursivo, somar,
-                                   tentar_novamente, todos)
+from utilitarios.funcional import (
+    achatar,
+    agrupar_por,
+    algum,
+    compor,
+    contar_vulnerabilidades,
+    cronometrar,
+    negar,
+    por_severidade_minima,
+    por_texto,
+    por_tipo,
+    risco_recursivo,
+    somar,
+    tentar_novamente,
+    todos,
+)
 
 
 def par(n):

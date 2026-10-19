@@ -1,4 +1,4 @@
-.venv/
+﻿.venv/
 .idea/
 __pycache__/
 *.pyc
@@ -10,10 +10,5 @@ logs/
 banco_ativos.txt
 banco_api.db
 banco_api.jsonl
+dependencias.json
 .tmp_*
-
-logs/
-banco_api.db
-banco_api.jsonl
-.pytest_cache/
-.coverage

@@ -5,6 +5,7 @@ import sqlite3
 import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
+from typing import ClassVar
 
 from dominio.entidades import criar_ativo
 from dominio.excecoes import AtivoNaoEncontrado, ErroCRUD, ErroPersistencia
@@ -138,20 +139,35 @@ class RepositorioSQLite(RepositorioAtivos):
         responsavel TEXT NOT NULL DEFAULT '',
         tratamento  TEXT NOT NULL DEFAULT '',
         progresso   INTEGER NOT NULL DEFAULT 0 CHECK (progresso BETWEEN 0 AND 10),
-        status      TEXT NOT NULL
+        status      TEXT NOT NULL,
+        cvss        REAL CHECK (cvss IS NULL OR cvss BETWEEN 0 AND 10),
+        vetor_cvss  TEXT NOT NULL DEFAULT ''
     );
     CREATE INDEX IF NOT EXISTS idx_vul_ativo ON vulnerabilidades(ativo_id);
     """
+
+    _COLUNAS_NOVAS: ClassVar[dict[str, str]] = {
+        "cvss": "ALTER TABLE vulnerabilidades ADD COLUMN cvss REAL",
+        "vetor_cvss": "ALTER TABLE vulnerabilidades ADD COLUMN vetor_cvss TEXT NOT NULL DEFAULT ''",
+    }
 
     def __init__(self, caminho=":memory:"):
         self._conexao = sqlite3.connect(str(caminho), check_same_thread=False)
         self._conexao.row_factory = sqlite3.Row
         self._conexao.execute("PRAGMA foreign_keys = ON")
         self._conexao.executescript(self._ESQUEMA)
+        self._migrar()
+
+    def _migrar(self):
+        existentes = {linha["name"] for linha in self._conexao.execute("PRAGMA table_info(vulnerabilidades)")}
+        with self._conexao:
+            for coluna, comando in self._COLUNAS_NOVAS.items():
+                if coluna not in existentes:
+                    self._conexao.execute(comando)
 
     def _montar(self, linha):
         vuls = self._conexao.execute(
-            "SELECT nome, severidade, responsavel, tratamento, progresso, status "
+            "SELECT nome, severidade, cvss, vetor_cvss, responsavel, tratamento, progresso, status "
             "FROM vulnerabilidades WHERE ativo_id = ? ORDER BY ordem", (linha["id"],)
         ).fetchall()
         dados = dict(linha)
@@ -183,10 +199,10 @@ class RepositorioSQLite(RepositorioAtivos):
                 )
                 self._conexao.execute("DELETE FROM vulnerabilidades WHERE ativo_id = ?", (ativo.id,))
                 self._conexao.executemany(
-                    "INSERT INTO vulnerabilidades (ativo_id, ordem, nome, severidade, responsavel, "
-                    "tratamento, progresso, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-                    [(ativo.id, ordem, v["nome"], v["severidade"], v["responsavel"],
-                      v["tratamento"], v["progresso"], v["status"])
+                    "INSERT INTO vulnerabilidades (ativo_id, ordem, nome, severidade, cvss, vetor_cvss, "
+                    "responsavel, tratamento, progresso, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    [(ativo.id, ordem, v["nome"], v["severidade"], v["cvss"], v["vetor_cvss"],
+                      v["responsavel"], v["tratamento"], v["progresso"], v["status"])
                      for ordem, v in enumerate(dados["vulnerabilidades"])],
                 )
         except sqlite3.Error as erro:
