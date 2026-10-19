@@ -1,5 +1,5 @@
 class No:
-    __slots__ = ("valor", "proximo")
+    __slots__ = ("proximo", "valor")
 
     def __init__(self, valor, proximo=None):
         self.valor = valor

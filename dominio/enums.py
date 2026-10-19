@@ -44,6 +44,7 @@ _ROTULOS_TIPO = {
 
 
 class Severidade(IntEnum):
+    NENHUMA = 0
     BAIXA = 1
     MEDIA = 2
     ALTA = 3
@@ -51,7 +52,12 @@ class Severidade(IntEnum):
 
     @property
     def rotulo(self):
-        return ("Baixa", "Média", "Alta", "Crítica")[self.value - 1]
+        return ("Nenhuma", "Baixa", "Média", "Alta", "Crítica")[self.value]
+
+    @classmethod
+    def de_cvss(cls, nota):
+        from algoritmos.cvss import faixa_qualitativa
+        return cls.__members__[normalizar_chave(faixa_qualitativa(nota))]
 
     @classmethod
     def de_valor(cls, valor):

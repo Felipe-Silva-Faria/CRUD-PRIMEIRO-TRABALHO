@@ -3,6 +3,7 @@ import logging
 import time
 from functools import reduce
 
+from algoritmos.cvss import validar_nota
 from dominio.enums import Severidade, TipoAtivo, normalizar_chave
 
 logger = logging.getLogger(__name__)
@@ -39,6 +40,11 @@ def por_texto(texto):
 def por_severidade_minima(severidade):
     minima = Severidade.de_valor(severidade)
     return lambda ativo: (ativo.pior_severidade() or 0) >= minima
+
+
+def por_cvss_minimo(nota):
+    minima = validar_nota(nota)
+    return lambda ativo: (ativo.maior_cvss() or 0.0) >= minima
 
 
 def com_vulnerabilidades_abertas():

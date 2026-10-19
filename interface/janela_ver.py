@@ -1,8 +1,10 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
+
 from api.servicos_api import pegar_ativos
 from config import COR_FUNDO, COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
 from persistencia import estado
+
 
 # Acao do Botao Ver (Pesquisa por ID usando estrutura de dicionario)
 def abrir_janela_ver():

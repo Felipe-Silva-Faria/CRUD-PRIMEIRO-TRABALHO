@@ -41,9 +41,9 @@ def comparar_buscas(tamanhos=(1_000, 10_000, 50_000)):
         ordenados = sorted(ids)
         indice = indexar(ids, chave=lambda x: x)
         alvos = random.Random(1).sample(ids, 200)
-        t_lin = cronometrar(lambda: [busca_linear(ids, a) for a in alvos], 3)
-        t_bin = cronometrar(lambda: [busca_binaria(ordenados, a) for a in alvos], 3)
-        t_dic = cronometrar(lambda: [a in indice for a in alvos], 3)
+        t_lin = cronometrar(lambda ids=ids, alvos=alvos: [busca_linear(ids, a) for a in alvos], 3)
+        t_bin = cronometrar(lambda ordenados=ordenados, alvos=alvos: [busca_binaria(ordenados, a) for a in alvos], 3)
+        t_dic = cronometrar(lambda indice=indice, alvos=alvos: [a in indice for a in alvos], 3)
         print(f"{n:>8} | {t_lin:>12.2f} | {t_bin:>16.3f} | {t_dic:>10.3f}")
 
 

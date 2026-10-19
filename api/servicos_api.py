@@ -1,9 +1,9 @@
 from tkinter import messagebox
 
-import persistencia.estado as estado
 from api.cliente_api import ClienteAPI
 from config import ARQUIVO_TXT, URL_API
 from dominio.excecoes import ErroCRUD
+from persistencia import estado
 from persistencia.banco_txt import avisar_offline
 
 
