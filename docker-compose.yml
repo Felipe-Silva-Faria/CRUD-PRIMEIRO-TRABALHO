@@ -1,0 +1,42 @@
+services:
+  api:
+    build:
+      context: .
+      target: producao
+    image: crud-ativos-api:3.0
+    container_name: crud-ativos-api
+    ports:
+      - "127.0.0.1:8000:8000"
+    environment:
+      CRUD_API_KEY: ${CRUD_API_KEY:-}
+    volumes:
+      - dados:/app/dados
+      - logs:/app/logs
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 256m
+    cpus: 0.5
+    restart: unless-stopped
+
+  benchmark:
+    build:
+      context: .
+      target: testes
+    profiles: ["ferramentas"]
+    command: ["python", "-m", "analise.benchmark"]
+    volumes:
+      - ./analise:/app/analise:ro
+
+  testes:
+    build:
+      context: .
+      target: testes
+    profiles: ["testes"]
+
+volumes:
+  dados:
+  logs:

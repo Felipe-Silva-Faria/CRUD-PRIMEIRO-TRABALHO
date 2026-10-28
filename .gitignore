@@ -12,3 +12,8 @@ banco_api.db
 banco_api.jsonl
 dependencias.json
 .tmp_*
+
+usuarios.json
+preferencias_interface.json
+logs/
+*.db

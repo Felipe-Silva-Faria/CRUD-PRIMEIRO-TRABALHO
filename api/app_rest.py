@@ -1,4 +1,7 @@
+import hmac
+import logging
 import os
+import time
 
 from fastapi import FastAPI, Query, Request, Response, status
 from fastapi.responses import JSONResponse
@@ -8,7 +11,10 @@ from algoritmos.cvss import calcular_cvss, nota_de_rotulo_legado
 from dominio.excecoes import AtivoNaoEncontrado, ErroPersistencia, ErroValidacao
 from persistencia.repositorio import RepositorioJsonLines, RepositorioMemoria, RepositorioSQLite
 from servicos.servico_ativos import CHAVES_ORDENACAO, ServicoAtivos
+from utilitarios.auditoria import ativar_log_json, evento_seguranca
 from utilitarios.funcional import por_cvss_minimo, por_severidade_minima, por_texto, por_tipo
+
+logger = logging.getLogger("api.app_rest")
 
 
 class VulnerabilidadeEntrada(BaseModel):
@@ -97,9 +103,25 @@ def repositorio_padrao():
     return RepositorioSQLite(os.getenv("CRUD_ARQUIVO", "banco_api.db"))
 
 
-def criar_app(servico=None):
+def criar_app(servico=None, chave_api=None):
     servico = servico or ServicoAtivos(repositorio_padrao())
-    app = FastAPI(title="CRUD Ativos de TI", version="2.1.0")
+    chave_api = os.getenv("CRUD_API_KEY", "") if chave_api is None else chave_api
+    app = FastAPI(title="CRUD Ativos de TI", version="3.0.0")
+
+    @app.middleware("http")
+    async def _monitorar(request: Request, call_next):
+        inicio = time.perf_counter()
+        if chave_api and request.url.path != "/health":
+            recebida = request.headers.get("X-API-Key", "")
+            if not hmac.compare_digest(recebida, chave_api):
+                evento_seguranca(logger, "authz_fail", rota=request.url.path,
+                                 ip=request.client.host if request.client else "?")
+                return JSONResponse(status_code=401, content={"detail": "nao autorizado"})
+        resposta = await call_next(request)
+        logger.info("requisicao", extra={
+            "metodo": request.method, "rota": request.url.path, "status": resposta.status_code,
+            "duracao_ms": round((time.perf_counter() - inicio) * 1000, 2)})
+        return resposta
 
     @app.exception_handler(AtivoNaoEncontrado)
     async def _nao_encontrado(request: Request, erro: AtivoNaoEncontrado):
@@ -115,7 +137,7 @@ def criar_app(servico=None):
 
     @app.get("/health")
     def health():
-        return {"status": "ok"}
+        return {"status": "ok", "versao": app.version}
 
     @app.get("/cvss/calcular")
     def calcular(vetor: str = Query(..., min_length=10)):
@@ -190,4 +212,6 @@ def criar_app(servico=None):
     return app
 
 
+if os.getenv("CRUD_LOG_JSON") == "1":
+    ativar_log_json()
 app = criar_app()

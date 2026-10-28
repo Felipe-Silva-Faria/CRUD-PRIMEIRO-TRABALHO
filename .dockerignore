@@ -1,0 +1,15 @@
+.venv/
+.git/
+.idea/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+logs/
+banco_ativos.txt
+banco_api.db
+banco_api.jsonl
+dependencias.json
+usuarios.json
+preferencias_interface.json
+.env

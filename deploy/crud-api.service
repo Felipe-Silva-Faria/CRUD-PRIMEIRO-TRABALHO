@@ -1,0 +1,28 @@
+[Unit]
+Description=CRUD de Ativos de TI - API FastAPI
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=crud
+Group=crud
+WorkingDirectory=/opt/crud-ativos
+Environment=CRUD_REPOSITORIO=sqlite
+Environment=CRUD_ARQUIVO=/var/lib/crud-ativos/banco_api.db
+Environment=CRUD_LOGS=/var/log/crud-ativos
+Environment=CRUD_LOG_JSON=1
+EnvironmentFile=-/etc/crud-ativos/api.env
+ExecStart=/opt/crud-ativos/.venv/bin/uvicorn api.app_rest:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/crud-ativos /var/log/crud-ativos
+CapabilityBoundingSet=
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+
+[Install]
+WantedBy=multi-user.target
