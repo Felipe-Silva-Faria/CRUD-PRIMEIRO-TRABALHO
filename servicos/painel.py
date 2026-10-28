@@ -1,7 +1,6 @@
 import logging
 import time
 from dataclasses import dataclass
-
 from algoritmos import risco
 from algoritmos.ordenacao import ALGORITMOS, ordenar
 from dominio.entidades import Vulnerabilidade, criar_ativo
@@ -138,7 +137,7 @@ class PainelVulnerabilidades:
                  "local": dados.get("local", ""), "vulnerabilidades": []}
         if ativo_id is not None:
             corpo["vulnerabilidades"] = [v.to_dict() for v in self.ativo(ativo_id).vulnerabilidades]
-        criar_ativo({**corpo, "id": ativo_id or 0})
+        criar_ativo({**corpo, "id": ativo_id})
         if ativo_id is None:
             resultado = self._fonte.cadastrar(corpo)
         else:
