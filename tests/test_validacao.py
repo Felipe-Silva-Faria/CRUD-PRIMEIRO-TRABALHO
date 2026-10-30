@@ -1,5 +1,4 @@
 import pytest
-
 from dominio.excecoes import ErroValidacao
 from dominio.validacao import validar_progresso, validar_texto, validar_texto_livre
 

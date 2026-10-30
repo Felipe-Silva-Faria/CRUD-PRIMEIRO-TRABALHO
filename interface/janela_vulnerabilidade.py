@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-
 from api.servicos_api import mandar_ativo
 from ativos.tabela_ativos import atualizar_tabela, texto_cvss
 from config import ARQUIVO_TXT, COR_FUNDO, COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO

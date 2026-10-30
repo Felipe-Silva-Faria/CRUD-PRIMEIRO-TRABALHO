@@ -1,5 +1,4 @@
 import tkinter as tk
-
 from interface.moderna import tema
 from interface.moderna.componentes import Badge, Cartao, CartaoMetrica, GraficoBarras, GraficoRosca, Rotulo, limpar
 from interface.moderna.paginas.base import Pagina

@@ -1,7 +1,6 @@
 import logging
 import random
 from datetime import datetime
-
 from algoritmos.busca import busca_por_prefixo
 from algoritmos.ordenacao import ordenar
 from dominio.entidades import criar_ativo

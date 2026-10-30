@@ -1,7 +1,6 @@
 import math
 import tkinter as tk
 from tkinter import ttk
-
 from dominio.excecoes import ErroValidacao
 from interface.moderna import NOME_EXIBICAO, VERSAO, preferencias, tema
 from interface.moderna.componentes import Botao, Campo, Cartao, Rotulo

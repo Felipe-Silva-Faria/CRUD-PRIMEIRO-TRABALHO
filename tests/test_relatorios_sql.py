@@ -1,5 +1,4 @@
 import pytest
-
 from dominio.entidades import criar_ativo
 from persistencia.relatorios_sql import RelatorioSQL
 

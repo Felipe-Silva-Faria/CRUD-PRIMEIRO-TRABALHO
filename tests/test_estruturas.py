@@ -1,7 +1,5 @@
 import random
-
 import pytest
-
 from estruturas.arvore_bst import ArvoreBinariaBusca
 from estruturas.grafo import GrafoDirecionado
 from estruturas.tabela_hash import IndiceTexto, TabelaHash

@@ -1,5 +1,4 @@
 import tkinter as tk
-
 from dominio.excecoes import ErroValidacao
 from interface.tema import TEMA_PADRAO
 

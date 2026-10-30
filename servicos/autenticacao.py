@@ -3,7 +3,6 @@ import hmac
 import logging
 import secrets
 import time
-
 from dominio.excecoes import ErroCRUD, ErroValidacao
 from persistencia.usuarios import Usuario
 from utilitarios.auditoria import evento_seguranca

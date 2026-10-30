@@ -2,11 +2,9 @@ import hmac
 import logging
 import os
 import time
-
 from fastapi import FastAPI, Query, Request, Response, status
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, field_validator, model_validator
-
 from algoritmos.cvss import calcular_cvss, nota_de_rotulo_legado
 from dominio.excecoes import AtivoNaoEncontrado, ErroPersistencia, ErroValidacao
 from persistencia.repositorio import RepositorioJsonLines, RepositorioMemoria, RepositorioSQLite

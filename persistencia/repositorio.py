@@ -6,7 +6,6 @@ import tempfile
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import ClassVar
-
 from dominio.entidades import criar_ativo
 from dominio.excecoes import AtivoNaoEncontrado, ErroCRUD, ErroPersistencia
 

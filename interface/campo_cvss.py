@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-
 from algoritmos.cvss import (
     NOMES_METRICAS,
     ORDEM_METRICAS,
