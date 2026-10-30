@@ -23,5 +23,5 @@ class BarramentoEventos:
         for callback in list(self._assinantes.get(evento, [])):
             try:
                 callback(**dados)
-            except Exception:  # noqa: BLE001 - um assinante com erro nao derruba os outros
+            except Exception:
                 logger.exception("assinante de '%s' falhou", evento)

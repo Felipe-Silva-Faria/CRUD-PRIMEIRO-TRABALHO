@@ -1,6 +1,7 @@
 import argparse
 import runpy
 import sys
+
 from utilitarios.auditoria import ativar_log_json
 from utilitarios.log import configurar_logs
 

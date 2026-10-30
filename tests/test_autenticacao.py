@@ -1,5 +1,7 @@
 import json
+
 import pytest
+
 from dominio.excecoes import ErroValidacao
 from persistencia.usuarios import RepositorioUsuariosJSON, RepositorioUsuariosMemoria
 from servicos.autenticacao import ContaBloqueada, ErroAutenticacao, ServicoAutenticacao

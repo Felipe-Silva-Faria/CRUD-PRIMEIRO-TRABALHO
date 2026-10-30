@@ -2,6 +2,7 @@ import functools
 import logging
 import time
 from functools import reduce
+
 from algoritmos.cvss import validar_nota
 from dominio.enums import Severidade, TipoAtivo, normalizar_chave
 

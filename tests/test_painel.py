@@ -1,4 +1,5 @@
 import pytest
+
 from dominio.excecoes import ErroValidacao
 from servicos.eventos import DADOS_ALTERADOS, BarramentoEventos
 from servicos.painel import FonteLocal, PainelVulnerabilidades

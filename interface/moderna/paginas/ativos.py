@@ -1,4 +1,5 @@
 import tkinter as tk
+
 from dominio.enums import TipoAtivo
 from dominio.excecoes import ErroCRUD
 from interface.moderna import tema

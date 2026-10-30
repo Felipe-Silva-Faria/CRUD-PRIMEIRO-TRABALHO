@@ -1,6 +1,7 @@
 import logging
 import tkinter as tk
 from tkinter import messagebox
+
 from dominio.excecoes import ErroCRUD
 from interface.moderna import NOME_EXIBICAO, tema
 from interface.moderna.componentes import Rotulo

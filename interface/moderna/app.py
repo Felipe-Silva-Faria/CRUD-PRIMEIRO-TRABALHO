@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+
 from interface.moderna import NOME_EXIBICAO, preferencias, tema
 from interface.moderna.componentes import AreaRolavel, BarraLateral, Botao, Rotulo, limpar
 from interface.moderna.paginas.ativos import PaginaAtivos

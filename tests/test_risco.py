@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 from algoritmos.risco import analisar, montar_A, montar_M_v, propagar, risco_proprio, somas_parciais
 from dominio.excecoes import ErroValidacao
 from persistencia import dependencias as deps

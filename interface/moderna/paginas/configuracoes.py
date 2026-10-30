@@ -2,6 +2,7 @@ import random
 import time
 import tkinter as tk
 from tkinter import ttk
+
 from algoritmos.ordenacao import ALGORITMOS
 from dominio.excecoes import ErroCRUD
 from interface.moderna import preferencias, tema
