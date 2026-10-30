@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+
 from ativos.acoes_ativos import deletar_ativo_selecionado
 from ativos.tabela_ativos import atualizar_tabela, clicou_no_numero
 from config import COR_FUNDO, COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO

@@ -1,5 +1,7 @@
 from dataclasses import dataclass
+
 import numpy as np
+
 from algoritmos.cvss import nota_de_dict
 from dominio.excecoes import ErroValidacao
 

@@ -1,4 +1,5 @@
 import pytest
+
 from algoritmos.cvss import (
     arredondar_para_cima,
     calcular_cvss,

@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+
 from algoritmos.cvss import calcular_cvss, interpretar_entrada, nota_de_rotulo_legado
 from dominio.enums import Severidade, StatusTratamento, TipoAtivo
 from dominio.excecoes import ErroValidacao

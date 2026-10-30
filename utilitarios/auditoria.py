@@ -1,7 +1,7 @@
 import json
 import logging
 import os
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
@@ -11,7 +11,7 @@ _CAMPOS_PADRAO = set(vars(logging.makeLogRecord({}))) | {"message", "asctime"}
 class FormatadorJSON(logging.Formatter):
     def format(self, registro):
         evento = {
-            "quando": datetime.fromtimestamp(registro.created, timezone.utc).isoformat(),
+            "quando": datetime.fromtimestamp(registro.created, UTC).isoformat(),
             "nivel": registro.levelname,
             "modulo": registro.name,
             "mensagem": registro.getMessage(),

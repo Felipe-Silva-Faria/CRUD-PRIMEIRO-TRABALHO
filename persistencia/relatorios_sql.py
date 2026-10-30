@@ -27,7 +27,7 @@ class RelatorioSQL(RepositorioSQLite):
                    ROUND(AVG(CASE WHEN v.progresso < 10 THEN {_RESIDUAL} END), 2) AS risco_medio,
                    ROUND(MAX(v.cvss), 1)                                       AS cvss_max
             FROM vulnerabilidades v
-            """  # noqa: S608 - so constantes internas no f-string
+            """
         )[0]
         linha["ativos"] = self._conexao.execute("SELECT COUNT(*) FROM ativos").fetchone()[0]
         for chave in ("total", "abertas", "criticas"):
@@ -43,7 +43,7 @@ class RelatorioSQL(RepositorioSQLite):
             FROM vulnerabilidades {filtro}
             GROUP BY severidade
             ORDER BY MIN(cvss) DESC
-            """  # noqa: S608
+            """
         )
 
     def por_status(self):
@@ -74,7 +74,7 @@ class RelatorioSQL(RepositorioSQLite):
             GROUP BY a.id, a.nome, a.tipo, a.local
             ORDER BY abertas DESC, risco_residual DESC
             LIMIT ?
-            """,  # noqa: S608
+            """,
             (int(limite),),
         )
 
@@ -91,7 +91,7 @@ class RelatorioSQL(RepositorioSQLite):
             GROUP BY a.local
             HAVING SUM({_RESIDUAL}) > 0
             ORDER BY risco_residual DESC
-            """  # noqa: S608
+            """
         )
 
     def por_tipo_de_ativo(self):
@@ -137,5 +137,5 @@ class RelatorioSQL(RepositorioSQLite):
             FROM vulnerabilidades v
             INNER JOIN ativos a ON a.id = v.ativo_id
             ORDER BY v.cvss DESC, a.nome
-            """  # noqa: S608
+            """
         )

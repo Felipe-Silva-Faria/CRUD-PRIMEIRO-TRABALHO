@@ -3,6 +3,7 @@ import os
 import tempfile
 from dataclasses import asdict, dataclass
 from pathlib import Path
+
 from dominio.excecoes import ErroPersistencia
 
 ARQUIVO_USUARIOS = "usuarios.json"

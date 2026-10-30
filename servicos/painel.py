@@ -1,6 +1,7 @@
 import logging
 import time
 from dataclasses import dataclass
+
 from algoritmos import risco
 from algoritmos.ordenacao import ALGORITMOS, ordenar
 from dominio.entidades import Vulnerabilidade, criar_ativo
@@ -106,8 +107,10 @@ class PainelVulnerabilidades:
         self._indice = IndiceTexto()
         for r in self._registros:
             self._por_id[r.id] = r
-            self._indice.indexar(r.id, " ".join([
-                r.id, r.vul.nome, r.ativo.nome, r.ativo.local, r.vul.responsavel, r.severidade]))
+            self._indice.indexar(
+                r.id,
+                f"{r.id} {r.vul.nome} {r.ativo.nome} {r.ativo.local} {r.vul.responsavel} {r.severidade}",
+            )
         pares = sorted(((r.vul.cvss, r.id), r) for r in self._registros)
         self._arvore = ArvoreBinariaBusca.construir_balanceada(pares)
 

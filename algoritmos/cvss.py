@@ -1,6 +1,7 @@
 import math
 import re
 from dataclasses import dataclass
+
 from dominio.excecoes import ErroValidacao
 
 VERSOES_SUPORTADAS = ("3.0", "3.1")

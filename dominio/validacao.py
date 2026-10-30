@@ -1,4 +1,5 @@
 import re
+
 from dominio.excecoes import ErroValidacao
 
 _PADRAO_SEM_DIGITOS = re.compile(r"^[A-Za-zÀ-ÖØ-öø-ÿ .'\-]+$")

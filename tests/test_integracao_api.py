@@ -1,6 +1,8 @@
 import random
+
 import pytest
 from fastapi.testclient import TestClient
+
 from api.app_rest import criar_app
 from persistencia.repositorio import RepositorioMemoria
 from servicos.servico_ativos import ServicoAtivos
