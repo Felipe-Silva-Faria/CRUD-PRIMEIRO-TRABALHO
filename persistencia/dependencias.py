@@ -2,7 +2,6 @@ import json
 import os
 import tempfile
 from pathlib import Path
-
 from dominio.excecoes import ErroValidacao
 
 ARQUIVO_DEPENDENCIAS = "dependencias.json"

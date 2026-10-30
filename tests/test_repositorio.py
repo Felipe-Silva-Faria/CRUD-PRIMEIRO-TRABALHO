@@ -1,8 +1,6 @@
 import json
 import sqlite3
-
 import pytest
-
 from dominio.entidades import criar_ativo
 from dominio.excecoes import AtivoNaoEncontrado
 from persistencia.repositorio import RepositorioJsonLines, RepositorioMemoria, RepositorioSQLite

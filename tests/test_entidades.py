@@ -1,5 +1,4 @@
 import pytest
-
 from dominio.entidades import Ativo, AtivoGenerico, BancoDeDados, Servidor, Vulnerabilidade, criar_ativo
 from dominio.enums import Severidade, StatusTratamento, TipoAtivo
 from dominio.excecoes import ErroValidacao

@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-
 from algoritmos.cvss import descrever_vetor
 from dominio.excecoes import ErroCRUD
 from interface.moderna import tema

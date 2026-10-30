@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-
 from interface.tema import TEMAS
 
 

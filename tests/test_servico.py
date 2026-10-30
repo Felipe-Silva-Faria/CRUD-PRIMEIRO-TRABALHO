@@ -1,5 +1,4 @@
 import pytest
-
 from dominio.excecoes import AtivoNaoEncontrado, ErroValidacao
 from servicos.servico_ativos import ID_MAXIMO, ID_MINIMO
 from utilitarios.funcional import por_tipo

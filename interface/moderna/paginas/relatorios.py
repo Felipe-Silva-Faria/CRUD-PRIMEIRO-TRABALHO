@@ -1,7 +1,6 @@
 import csv
 import tkinter as tk
 from tkinter import filedialog, ttk
-
 from interface.moderna import tema
 from interface.moderna.componentes import Botao, Cartao, CartaoMetrica, GraficoRosca, Rotulo, Tabela
 from interface.moderna.paginas.base import Pagina

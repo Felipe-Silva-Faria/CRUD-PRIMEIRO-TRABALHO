@@ -1,7 +1,6 @@
 import re
 import tkinter as tk
 from tkinter import messagebox
-
 from config import COR_PAINEL, COR_TEXTO, COR_VIOLETA, COR_VIOLETA_CLARO
 from interface.janela_vulnerabilidade import abrir_janela_vulnerabilidade
 from persistencia import estado

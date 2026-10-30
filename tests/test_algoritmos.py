@@ -1,7 +1,5 @@
 import random
-
 import pytest
-
 from algoritmos.busca import busca_binaria, busca_binaria_recursiva, busca_linear, busca_por_prefixo, indexar
 from algoritmos.ordenacao import ALGORITMOS, ordenar
 

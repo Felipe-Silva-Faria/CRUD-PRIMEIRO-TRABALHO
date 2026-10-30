@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import messagebox, ttk
-
 from algoritmos.cvss import formatar, nota_de_dict
 from api.servicos_api import pegar_ativos
 from config import COR_PAINEL, COR_TEXTO

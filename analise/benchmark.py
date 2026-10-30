@@ -1,6 +1,5 @@
 import random
 import time
-
 from algoritmos.busca import busca_binaria, busca_linear, indexar
 from algoritmos.ordenacao import ALGORITMOS
 from estruturas.arvore_bst import ArvoreBinariaBusca

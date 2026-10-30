@@ -6,7 +6,7 @@ from utilitarios.log import configurar_logs
 
 
 def main(argv=None):
-    parser = argparse.ArgumentParser(description="CRUD de Ativos de TI - versao 3.0")
+    parser = argparse.ArgumentParser(description="CRUD de Ativos de TI - versao 4.0")
     grupo = parser.add_mutually_exclusive_group()
     grupo.add_argument("--local", action="store_true", help="usa so o arquivo local, sem a API")
     grupo.add_argument("--classica", action="store_true", help="abre a interface antiga")

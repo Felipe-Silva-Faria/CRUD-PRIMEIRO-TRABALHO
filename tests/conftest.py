@@ -1,8 +1,6 @@
 import os
 import random
-
 import pytest
-
 from persistencia.repositorio import RepositorioMemoria
 from servicos.servico_ativos import ServicoAtivos
 

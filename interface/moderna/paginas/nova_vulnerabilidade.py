@@ -1,5 +1,4 @@
 import tkinter as tk
-
 from algoritmos.cvss import descrever_vetor, faixa_qualitativa, interpretar_entrada
 from dominio.excecoes import ErroCRUD, ErroValidacao
 from interface.moderna import tema

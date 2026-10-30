@@ -1,6 +1,5 @@
 import math
 import tkinter as tk
-
 from dominio.excecoes import ErroCRUD
 from interface.moderna import tema
 from interface.moderna.componentes import Botao, Cartao, Combo, Rotulo, Tabela, limpar

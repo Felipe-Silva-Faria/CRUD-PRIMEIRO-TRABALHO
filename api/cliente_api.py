@@ -1,8 +1,6 @@
 import logging
 from dataclasses import dataclass, field
-
 import requests
-
 from config import ARQUIVO_TXT, URL_API
 from dominio.entidades import criar_ativo
 from dominio.excecoes import ApiIndisponivel, AtivoNaoEncontrado, ErroCRUD

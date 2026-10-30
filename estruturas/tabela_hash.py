@@ -1,5 +1,4 @@
 import re
-
 from dominio.enums import normalizar_chave
 
 

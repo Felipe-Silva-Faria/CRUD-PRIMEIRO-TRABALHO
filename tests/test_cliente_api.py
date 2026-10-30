@@ -1,7 +1,6 @@
 from unittest.mock import MagicMock
 import pytest
 import requests
-
 from api.cliente_api import ClienteAPI
 from dominio.excecoes import ApiIndisponivel
 

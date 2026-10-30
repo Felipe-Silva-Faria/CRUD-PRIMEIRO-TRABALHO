@@ -1,5 +1,4 @@
 from tkinter import ttk
-
 from config import COR_VIOLETA, COR_VIOLETA_CLARO
 
 FUNDO = "#0b0a12"

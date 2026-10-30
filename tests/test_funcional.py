@@ -1,7 +1,5 @@
 from unittest.mock import Mock
-
 import pytest
-
 from dominio.entidades import criar_ativo
 from utilitarios.funcional import (
     achatar,

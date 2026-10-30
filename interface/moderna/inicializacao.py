@@ -1,7 +1,5 @@
 import os
-
 import requests
-
 from algoritmos.ordenacao import ALGORITMOS
 from api.cliente_api import ClienteAPI
 from config import ARQUIVO_TXT, URL_API
