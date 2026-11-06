@@ -1,2 +1,2 @@
 NOME_EXIBICAO = "Gestão de Vulnerabilidades"
-VERSAO = "4.0"
+VERSAO = "4.1"
