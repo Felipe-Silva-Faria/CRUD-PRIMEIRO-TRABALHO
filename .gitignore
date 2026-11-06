@@ -17,3 +17,8 @@ usuarios.json
 preferencias_interface.json
 logs/
 *.db
+
+usuarios.json
+preferencias_interface.json
+logs/
+*.db

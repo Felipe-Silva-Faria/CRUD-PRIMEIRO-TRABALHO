@@ -160,8 +160,31 @@ class Combo(tk.Frame):
         self.caixa.configure(values=list(valores))
 
 
+# Checkbox no tema escuro
+class CaixaSelecao(tk.Checkbutton):
+    def __init__(self, mestre, texto, marcada=False, habilitada=True, comando=None):
+        self.var = tk.BooleanVar(value=marcada)
+        fundo = mestre.cget("bg")
+        super().__init__(mestre, text=texto, variable=self.var, command=comando, bg=fundo, fg=tema.TEXTO,
+                         selectcolor=tema.CARTAO_ALTO, activebackground=fundo, activeforeground=tema.TEXTO,
+                         disabledforeground=tema.TEXTO_APAGADO, font=tema.F_NORMAL, anchor="w",
+                         highlightthickness=0, bd=0, cursor="hand2")
+        if not habilitada:
+            self.configure(state="disabled", cursor="")
+
+    @property
+    def marcada(self):
+        return bool(self.var.get())
+
+    @marcada.setter
+    def marcada(self, valor):
+        self.var.set(bool(valor))
+
+
 class Tabela(tk.Frame):
-    def __init__(self, mestre, colunas, ao_ordenar=None, ao_duplo_clique=None, altura=12):
+
+    def __init__(self, mestre, colunas, ao_ordenar=None, ao_duplo_clique=None, altura=12,
+                 ao_selecionar=None, rolagem_horizontal=False):
         super().__init__(mestre, bg=tema.CARTAO)
         self._colunas, self._ao_ordenar = colunas, ao_ordenar
         self.coluna_ordenada, self.reverso = None, False
@@ -170,15 +193,32 @@ class Tabela(tk.Frame):
         for ident, titulo, largura, ancora in colunas:
             self.arvore.heading(ident, text=titulo, anchor=ancora,
                                 command=lambda c=ident: self._clicou_cabecalho(c))
-            self.arvore.column(ident, width=largura, anchor=ancora, stretch=True)
+            # com rolagem horizontal a coluna NAO estica nem encolhe: a largura total
+            # passa da largura da tela e a barra horizontal entra em acao
+            self.arvore.column(ident, width=largura, anchor=ancora,
+                               stretch=not rolagem_horizontal,
+                               minwidth=largura if rolagem_horizontal else 20)
         self.arvore.tag_configure("impar", background=tema.misturar(tema.CARTAO_ALTO, tema.CARTAO, 0.5))
-        barra = ttk.Scrollbar(self, orient="vertical", command=self.arvore.yview)
-        self.arvore.configure(yscrollcommand=barra.set)
-        self.arvore.pack(side="left", fill="both", expand=True)
-        barra.pack(side="right", fill="y")
+
+        barra_v = ttk.Scrollbar(self, orient="vertical", command=self.arvore.yview)
+        self.arvore.configure(yscrollcommand=barra_v.set)
+        # grid (e nao pack) para encaixar a barra horizontal embaixo da tabela
+        self.arvore.grid(row=0, column=0, sticky="nsew")
+        barra_v.grid(row=0, column=1, sticky="ns")
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        if rolagem_horizontal:
+            barra_h = ttk.Scrollbar(self, orient="horizontal", command=self.arvore.xview)
+            self.arvore.configure(xscrollcommand=barra_h.set)
+            barra_h.grid(row=1, column=0, sticky="ew")
+            self.arvore.bind("<Shift-MouseWheel>",
+                             lambda e: self.arvore.xview_scroll(int(-e.delta / 120), "units"))
+
         if ao_duplo_clique:
             self.arvore.bind("<Double-1>", lambda _e: self._duplo(ao_duplo_clique))
             self.arvore.bind("<Return>", lambda _e: self._duplo(ao_duplo_clique))
+        if ao_selecionar:
+            self.arvore.bind("<<TreeviewSelect>>", lambda _e: ao_selecionar(self.selecionado()))
 
     def _duplo(self, callback):
         if self.selecionado():
@@ -199,6 +239,7 @@ class Tabela(tk.Frame):
             self.arvore.heading(ident, text=titulo + seta)
 
     def carregar(self, linhas):
+        """linhas: lista de (iid, (valores...))."""
         self.arvore.delete(*self.arvore.get_children())
         for i, (iid, valores) in enumerate(linhas):
             self.arvore.insert("", "end", iid=str(iid), values=valores, tags=("impar",) if i % 2 else ())
@@ -206,6 +247,100 @@ class Tabela(tk.Frame):
     def selecionado(self):
         selecao = self.arvore.selection()
         return selecao[0] if selecao else None
+
+# Pagina com barra de rolagem
+class AreaRolavel(tk.Frame):
+    def __init__(self, mestre, bg=tema.PAINEL):
+        super().__init__(mestre, bg=bg)
+        self._canvas = tk.Canvas(self, bg=bg, highlightthickness=0, bd=0)
+        self._barra = ttk.Scrollbar(self, orient="vertical", command=self._canvas.yview)
+        self._canvas.configure(yscrollcommand=self._barra.set)
+        self._canvas.pack(side="left", fill="both", expand=True)
+        self.interior = tk.Frame(self._canvas, bg=bg)
+        self._janela = self._canvas.create_window(0, 0, window=self.interior, anchor="nw")
+        self._canvas.bind("<Configure>", lambda _e: self._ajustar())
+        self.interior.bind("<Configure>", lambda _e: self._ajustar())
+
+    def _ajustar(self):
+        largura = self._canvas.winfo_width()
+        visivel = self._canvas.winfo_height()
+        necessario = self.interior.winfo_reqheight()
+        altura = max(visivel, necessario)
+        self._canvas.itemconfigure(self._janela, width=largura, height=altura)
+        self._canvas.configure(scrollregion=(0, 0, largura, altura))
+        if necessario > visivel:
+            if not self._barra.winfo_ismapped():
+                self._barra.pack(side="right", fill="y", before=self._canvas)
+        elif self._barra.winfo_ismapped():
+            self._barra.pack_forget()
+            self._canvas.yview_moveto(0)
+
+    def rolar(self, evento):
+        classe = getattr(evento.widget, "winfo_class", lambda: "")()
+        if classe in ("Treeview", "Text", "Listbox"):
+            return
+        if self._canvas.yview() != (0.0, 1.0):
+            self._canvas.yview_scroll(int(-evento.delta / 120), "units")
+
+
+class _Dialogo(tk.Toplevel):
+    def __init__(self, mestre, titulo, mensagem):
+        super().__init__(mestre)
+        self.resultado = None
+        self.title(titulo)
+        self.configure(bg=tema.CARTAO, padx=24, pady=20)
+        self.resizable(False, False)
+        self.transient(mestre.winfo_toplevel())
+        Rotulo(self, mensagem, tema.F_NORMAL, wraplength=360, justify="left").pack(anchor="w")
+        self._montar_campo()
+        botoes = tk.Frame(self, bg=tema.CARTAO)
+        botoes.pack(fill="x", pady=(16, 0))
+        Botao(botoes, "Confirmar", self._confirmar).pack(side="right")
+        Botao(botoes, "Cancelar", self.destroy, "secundario").pack(side="right", padx=8)
+        self.bind("<Escape>", lambda _e: self.destroy())
+        self.grab_set()
+
+    def _montar_campo(self):
+        raise NotImplementedError
+
+    def _confirmar(self):
+        raise NotImplementedError
+
+
+class DialogoSenha(_Dialogo):
+    def _montar_campo(self):
+        self.campo = Campo(self, "Senha", True, senha=True)
+        self.campo.pack(fill="x")
+        self.campo.entrada.focus_set()
+        self.bind("<Return>", lambda _e: self._confirmar())
+
+    def _confirmar(self):
+        self.resultado = self.campo.valor
+        self.destroy()
+
+
+class DialogoTexto(_Dialogo):
+    def _montar_campo(self):
+        self.area = AreaTexto(self, "Motivo", altura=3)
+        self.area.pack(fill="x")
+
+    def _confirmar(self):
+        self.resultado = self.area.valor
+        self.destroy()
+
+
+# Janela que pede a senha
+def pedir_senha(mestre, titulo, mensagem):
+    dialogo = DialogoSenha(mestre, titulo, mensagem)
+    mestre.wait_window(dialogo)
+    return dialogo.resultado
+
+
+# Janela que pede o motivo
+def pedir_texto(mestre, titulo, mensagem):
+    dialogo = DialogoTexto(mestre, titulo, mensagem)
+    mestre.wait_window(dialogo)
+    return dialogo.resultado
 
 
 class _Grafico(tk.Canvas):
@@ -318,38 +453,3 @@ class BarraLateral(tk.Frame):
             sel = c == chave
             botao.configure(bg=tema.VIOLETA_ESCURO if sel else tema.PAINEL,
                             fg=tema.TEXTO if sel else tema.TEXTO_SUAVE)
-
-class AreaRolavel(tk.Frame):
-
-    def __init__(self, mestre, bg=tema.PAINEL):
-        super().__init__(mestre, bg=bg)
-        self._canvas = tk.Canvas(self, bg=bg, highlightthickness=0, bd=0)
-        self._barra = ttk.Scrollbar(self, orient="vertical", command=self._canvas.yview)
-        self._canvas.configure(yscrollcommand=self._barra.set)
-        self._canvas.pack(side="left", fill="both", expand=True)
-        self.interior = tk.Frame(self._canvas, bg=bg)
-        self._janela = self._canvas.create_window(0, 0, window=self.interior, anchor="nw")
-        self._canvas.bind("<Configure>", lambda _e: self._ajustar())
-        self.interior.bind("<Configure>", lambda _e: self._ajustar())
-
-    def _ajustar(self):
-        largura = self._canvas.winfo_width()
-        visivel = self._canvas.winfo_height()
-        necessario = self.interior.winfo_reqheight()
-        altura = max(visivel, necessario)
-        self._canvas.itemconfigure(self._janela, width=largura, height=altura)
-        self._canvas.configure(scrollregion=(0, 0, largura, altura))
-        if necessario > visivel:
-            if not self._barra.winfo_ismapped():
-                self._barra.pack(side="right", fill="y", before=self._canvas)
-        elif self._barra.winfo_ismapped():
-            self._barra.pack_forget()
-            self._canvas.yview_moveto(0)
-
-    def rolar(self, evento):
-
-        classe = getattr(evento.widget, "winfo_class", lambda: "")()
-        if classe in ("Treeview", "Text", "Listbox"):
-            return
-        if self._canvas.yview() != (0.0, 1.0):
-            self._canvas.yview_scroll(int(-evento.delta / 120), "units")
