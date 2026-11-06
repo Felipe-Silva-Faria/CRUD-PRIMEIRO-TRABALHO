@@ -2,11 +2,14 @@ import csv
 import tkinter as tk
 from tkinter import filedialog, ttk
 
+from dominio.excecoes import ErroCRUD
+from dominio.permissoes import Autorizacao
 from interface.moderna import tema
 from interface.moderna.componentes import Botao, Cartao, CartaoMetrica, GraficoRosca, Rotulo, Tabela
 from interface.moderna.paginas.base import Pagina
 
 
+# Evita formula no Excel
 def celula_segura(valor):
     texto = "" if valor is None else str(valor)
     return "'" + texto if texto[:1] in ("=", "+", "-", "@", "\t", "\r") else texto
@@ -15,7 +18,8 @@ def celula_segura(valor):
 class PaginaRelatorios(Pagina):
     def construir(self):
         direita = self.cabecalho("Relatórios", "Consultas SQL sobre o mesmo esquema do RepositorioSQLite.")
-        Botao(direita, "⤓  Exportar CSV", self._exportar).pack()
+        self._botao_exportar = Botao(direita, "⤓  Exportar CSV", self._exportar)
+        self._botao_exportar.pack()
         abas = ttk.Notebook(self)
         abas.pack(fill="both", expand=True, padx=28, pady=(0, 20))
 
@@ -81,6 +85,9 @@ class PaginaRelatorios(Pagina):
         return tabela
 
     def carregar(self, **_):
+        pode_exportar = self.app.pode(Autorizacao.EXPORTAR_RELATORIOS)
+        self._botao_exportar.configure(state="normal" if pode_exportar else "disabled",
+                                       cursor="hand2" if pode_exportar else "")
         with self.painel.relatorio() as rel:
             resumo = rel.resumo()
             top = rel.top_ativos(5)
@@ -104,7 +111,13 @@ class PaginaRelatorios(Pagina):
         self._tab_local.carregar([(i, (l_["local"], l_["ativos"], l_["abertas"], l_["risco_residual"]))
                                   for i, l_ in enumerate(locais)])
 
+    # Acao do Botao EXPORTAR CSV
     def _exportar(self):
+        try:
+            self.app.exigir(Autorizacao.EXPORTAR_RELATORIOS)
+        except ErroCRUD as erro:
+            self.erro(erro)
+            return
         caminho = filedialog.asksaveasfilename(parent=self, defaultextension=".csv",
                                                initialfile="relatorio_vulnerabilidades.csv",
                                                filetypes=[("CSV", "*.csv")])
